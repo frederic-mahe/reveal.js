@@ -4,7 +4,7 @@
 	<head>
 		<meta charset="utf-8">
 
-		<title>Manipulation des données et production de figures sous R </title>
+		<title>Manipulation de données et production de figures sous R</title>
 
 		<meta name="description" content="dplyR, tidyR et ggplot2">
 		<meta name="author" content="collectif de bioinformatique de Baillarguet">
@@ -15,7 +15,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
 
 		<link rel="stylesheet" href="css/reveal.css">
-		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+		<link rel="stylesheet" href="css/theme/solarized.css" id="theme">
 
 		<!-- Code syntax highlighting -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
@@ -42,89 +42,526 @@
 
 	<body>
 
-		<div class="reveal">
+	  <div class="reveal">
+		<div class="slides">
+          
+          <!-- Titre -->
+		  <section>
+			<h1>Manipulation de données et visualisation sous R</h1>
+			<h3>ggplot2, dyplr & tidyr</h3>
+			<p>
+			  <small>collectif de bioinformatique de Baillarguet</small>
+			</p>
+		  </section>
 
-			<!-- Any section element inside of this container is displayed as a slide -->
-			<div class="slides">
-				<section>
-					<h1>Reveal.js</h1>
-					<h3>Manipulation des données et production de figures sous R</h3>
-					<p>
-						<small>Created by <a href="http://hakim.se">Hakim El Hattab</a> / <a href="http://twitter.com/hakimel">@hakimel</a></small>
-					</p>
-				</section>
+		  <!-- Historique de R -->
+		  <section>
+			<h2>R</h2>
+			<a href="https://www.r-project.org/">
+              <img data-src="https://www.r-project.org/Rlogo.png" alt="R logo">
+            </a>
+            <ul>
+			  <li>1993</li>
+			  <li>logiciel libre</li>
+			  <li>multi-plateforme</li>
+              <li>modulaire et en forte croissance</li>
+			</ul>
+		  </section>
 
-				<section>
-					<h2>Hello There</h2>
-					<p>
-						reveal.js enables you to create beautiful interactive slide decks using HTML. This presentation will show you examples of what it can do.
-					</p>
-				</section>
+		  <!-- Popularité de R -->
+		  <section>
+			<h2>Popularité croissante</h2>
+			<a href="http://r4stats.com/articles/popularity/">
+              <img data-src="http://i1.wp.com/datasciencepopularity.com/wp-content/uploads/2015/05/fig_2f_scholarlyimpactallstat21.png" alt="R's popularity">
+            </a>
+		  </section>
+
+		  <!-- Nombre de modules -->
+		  <section>
+			<h2>Nombre de modules croissant</h2>
+			<a href="http://r4stats.com/articles/popularity/">
+              <img
+                 width="500"
+                 data-src="http://i1.wp.com/r4stats.com/wp-content/uploads/2015/05/fig_9_cran.png"
+                 alt="R's modules">
+            </a>
+		  </section>
+
+		  <!-- Hadley Wickham -->
+		  <section>
+			<h2>Hadley Wickham</h2>
+            <a href="https://www.youtube.com/watch?v=LOXe6Eu59As">
+              <img
+                 data-src="https://i.ytimg.com/vi/LOXe6Eu59As/maxresdefault.jpg"
+                 alt="Hadley Wickham">
+            </a>
+		  </section>
+
+		  <!-- Hadley Wickham modules -->
+		  <section>
+			<h2>Hadley Wickham</h2>
+			<h3>manipulation (unifiée) et visualisation de données</h3>
+            <ul>
+			  <li><a href="https://cran.r-project.org/web/packages/stringr/index.html">stringr</a></li>
+			  <li><a href="https://cran.r-project.org/web/packages/dplyr/index.html">dplyr</a></li>
+			  <li><a href="https://cran.r-project.org/web/packages/tidyr/index.html">tidyr</a></li>
+			  <li><a href="http://ggplot2.org/">ggplot2</a> (<a href="https://www.springer.com/us/book/9780387245447">grammar of graphics</a> par Leland Wilkinson)</li>
+			  <li><a href="http://ggvis.rstudio.com/">ggvis</a></li>
+			  <li>Chief Scientist <a href="https://www.rstudio.com/">RStudio</a></li>
+			</ul>
+		  </section>
+
+		  <!-- RStudio -->
+		  <section>
+			<h2>RStudio</h2>
+			<h3>interface graphique pour R (et bien plus)</h3>
+            <a href="https://www.rstudio.com/">
+              <img width="400"
+                   data-src="https://www.rstudio.com/wp-content/uploads/2014/06/RStudio-Ball.png"
+                   >
+            </a>
+		  </section>
+
+		  <!-- Première démonstration : données simples -->
+		  <section>
+			<h2>Cleaning and visualizing genomic data</h2>
+			<h3>a case study in tidy analysis</h3>
+            <a href="http://varianceexplained.org/r/tidy-genomics/">
+              <img width="200"
+                   data-src="http://varianceexplained.org/images/david_robinson_picture2.jpg"
+                   >
+            </a>
+            <p>par David Robinson</p>
+		  </section>
+
+		  <!-- Source des données -->
+		  <section>
+			<h2>Coordination of Growth Rate, Cell Cycle, Stress Response, and Metabolic Activity in Yeast</h2>
+			<h3>Brauer et al. (2008) Mol. Biol. Cell January 1, 2008 vol. 19 no. 1 352-367 (doi: 10.1091/mbc.E07-08-0779)</h3>
+            <p>http://varianceexplained.org/files/Brauer2008_DataSet1.tds</p>
+		  </section>
+
+		  <!-- Premières commandes avec RStudio -->
+		  <section>
+			<h2>Premières commandes avec RStudio</h2>
+			<pre>
+              <code class="R" data-trim contenteditable>
+Brauer2008_DataSet1 <- read.delim("/tmp/Rtmp3mlo42/data1aaa3ddc8686")
+View(Brauer2008_DataSet1)                
+dim(Brauer2008_DataSet1)
+			  </code>
+            </pre>
+			<p>Nombre de colonnes et de lignes</p>
+		  </section>
+
+		  <!-- Description des données -->
+		  <section>
+			<h2>Description des données</h2>
+            <p>6 milieux de culture en déficit d'un nutriment :</p>
+            <ul>
+			  <li>glucose (G)</li>
+			  <li>ammonium (N)</li>
+			  <li>phosphate (P)</li>
+			  <li>sulfate (S)</li>
+			  <li>leucine (L)</li>
+			  <li>uracil (U)</li>
+			</ul>
+            <p>6 vitesses de croissance: lent (0,05) à rapide (0,3).</p>
+		  </section>
+
+		  <!-- Pourquoi changer la disposition des données ? -->
+		  <section>
+			<h2>Disposition des données : pourquoi changer ?</h2>
+            <p>Les outils d'Hadley Wickham réclament :</p>
+            <ul>
+			  <li>chaque variable forme une colonne,</li>
+			  <li>chaque observation forme une ligne,</li>
+			  <li>un type d'observation par tableau.</li>
+			</ul>
+            <p>Ce qui ne va pas dans la disposition actuelle :</p>
+            <ul>
+			  <li class="fragment">G0.05 n'est pas un nom de variable,</li>
+			  <li class="fragment">plusieurs variables dans la colonne NAME.</li>
+			</ul>
+		  </section>
+
+		  <!-- Traitement de la colonne NAME ? -->
+		  <section>
+			<h2>Séparer la colonne NAME en plusieurs variables</h2>
+            <p>La colonne NAME contient :</p>
+            <ul>
+			  <li>un nom de gène (ex : SFB2) ou rien,</li>
+			  <li>un nom de processus biologique,</li>
+			  <li>une fonction moléculaire,</li>
+			  <li>un identifiant,</li>
+			  <li>un autre identifiant (?)</li>
+			</ul>
+            <p>Séparer les variables facilite l'exploration et permet de poser des questions plus précises.</p>
+		  </section>
+
+		  <!-- Utilisation de dplyr et tidyr -->
+		  <section>
+		    <section>
+			  <h2>Séparer la colonne NAME en plusieurs variables</h2>
+			  <pre>
+                <code class="R" data-trim>
+library(dplyr)
+library(tidyr)
+cleaned_data <- original_data %>%
+    separate(NAME, c("name", "BP", "MF", "systematic_name", "number"), sep = "\\|\\|")
+View(cleaned_data)
+			    </code>
+              </pre>
+		    </section>
+		    <section>
+			  <h2>Autre possibilité</h2>
+			  <pre>
+                <code class="R" data-trim>
+library(dplyr)
+library(tidyr)
+cleaned_data <- separate(Brauer2008_DataSet1, NAME, c("name", "BP", "MF", "systematic_name", "number"), sep = "\\|\\|")
+			    </code>
+              </pre>
+		    </section>
+		  </section>
+
+		  <!-- retrait des espaces -->
+		    <section>
+			  <h2>Élimination des espaces</h2>
+			  <pre>
+                <code class="R" data-trim>
+head(cleaned_data$BP)
+			    </code>
+              </pre>
+			  <pre>
+## [1] " ER to Golgi transport "        " biological process unknown "  
+## [3] " proteolysis and peptidolysis " " mRNA polyadenylylation* "     
+## [5] " vesicle fusion* "              " biological process unknown "
+              </pre>
+		    </section>
+
+		  <!-- retrait des espaces -->
+		    <section>
+			  <h2>Élimination des espaces</h2>
+              <p>fonction trimws (<i>trim whitespace</i>) :</p>
+			  <pre>
+                <code class="R" data-trim>
+cleaned_data <- Brauer2008_DataSet1 %>%
+    separate(NAME, c("name", "BP", "MF", "systematic_name", "number"), sep = "\\|\\|") %>%
+    mutate_each(funs(trimws), name:systematic_name)
+			    </code>
+              </pre>
+              <pre>
+[1] "ER to Golgi transport"        "biological process unknown"  
+[3] "proteolysis and peptidolysis" "mRNA polyadenylylation*"     
+[5] "vesicle fusion*"              "biological process unknown"
+              </pre>
+		    </section>
+
+		  <!-- élimination de colonnes -->
+		    <section>
+			  <h2>Élimination de colonnes</h2>
+              <p>fonction <i>select</i> de dplyr :</p>
+			  <pre>
+                <code class="R" data-trim>
+cleaned_data <- Brauer2008_DataSet1 %>%
+    separate(NAME, c("name", "BP", "MF", "systematic_name", "number"), sep = "\\|\\|") %>%
+    mutate_each(funs(trimws), name:systematic_name) %>%
+    select(-number, -GID, -YORF, -GWEIGHT)
+glimpse(cleaned_data)
+			    </code>
+              </pre>
+              <pre>
+Observations: 5537
+Variables:
+$ name            (chr) "SFB2", "", "QRI7", "CFT2", "SSO2", "PSP2", ...
+$ BP              (chr) "ER to Golgi transport", "biological process...
+$ MF              (chr) "molecular function unknown", "molecular fun...
+$ systematic_name (chr) "YNL049C", "YNL095C", "YDL104C", "YLR115W", ...
+$ G0.05           (dbl) -0.24, 0.28, -0.02, -0.33, 0.05, -0.69, -0.5...
+$ G0.1            (dbl) -0.13, 0.13, -0.27, -0.41, 0.02, -0.03, -0.3...
+$ G0.15           (dbl) -0.21, -0.40, -0.27, -0.24, 0.40, 0.23, -0.1...
+...
+              </pre>
+		    </section>
 
 
+		  <!-- Extraire les variables des noms de colonnes -->
+		    <section>
+			  <h2>Passage au format Wickham</h2>
+              <p>objectif : une colonne par variable. Passage de 36
+              colonnes à 3 (nutriment, taux de croissance, expression) avec la
+              fonction <i>gather</i> de tidyr :</p>
+			  <pre>
+                <code class="R" data-trim>
+cleaned_data <- Brauer2008_DataSet1 %>%
+    separate(NAME, c("name", "BP", "MF", "systematic_name", "number"), sep = "\\|\\|") %>%
+    mutate_each(funs(trimws), name:systematic_name) %>%
+    select(-number, -GID, -YORF, -GWEIGHT) %>%
+    gather(sample, expression, G0.05:U0.3)
+glimpse(cleaned_data)
+			    </code>
+              </pre>
+		    </section>
 
+		  <!-- Extraire les variables des noms de colonnes -->
+		    <section>
+			  <h2>Passage au format Wickham</h2>
+              <p>objectif : une colonne par variable. Passage de 36
+              colonnes à 3 (nutriment, taux de croissance, expression) avec la
+              fonction <i>gather</i> de tidyr :</p>
+              <pre>
+Observations: 199332
+Variables:
+$ name            (chr) "SFB2", "", "QRI7", "CFT2", "SSO2", "PSP2", ...
+$ BP              (chr) "ER to Golgi transport", "biological process...
+$ MF              (chr) "molecular function unknown", "molecular fun...
+$ systematic_name (chr) "YNL049C", "YNL095C", "YDL104C", "YLR115W", ...
+$ sample          (fctr) G0.05, G0.05, G0.05, G0.05, G0.05, G0.05, G...
+$ expression      (dbl) -0.24, 0.28, -0.02, -0.33, 0.05, -0.69, -0.5...
+...
+              </pre>
+		    </section>
 
+		  <!-- Extraire les variables des noms de colonnes -->
+		    <section>
+			  <h2>Séparation des variables nutriment et taux de croissance</h2>
+              <p>fonction <i>separate</i> de tidyr :</p>
+			  <pre>
+                <code class="R" data-trim>
+cleaned_data <- Brauer2008_DataSet1 %>%
+    separate(NAME, c("name", "BP", "MF", "systematic_name", "number"), sep = "\\|\\|") %>%
+    mutate_each(funs(trimws), name:systematic_name) %>%
+    select(-number, -GID, -YORF, -GWEIGHT) %>%
+    gather(sample, expression, G0.05:U0.3) %>%
+    separate(sample, c("nutrient", "rate"), sep = 1, convert = TRUE)
+glimpse(cleaned_data)
+			    </code>
+			  </pre>
+		    </section>
 
-				<!-- Example of nested vertical slides -->
-				<section>
-				  <h2>ggtree</h2>
-				  <br>
-				  <img width="720"
-                       data-src="https://raw.githubusercontent.com/GuangchuangYu/ygc_name/master/Bioconductor/ggtree/2016-ggtree-phylip_files/figure-markdown_strict/unnamed-chunk-2-1.png" alt="ggtree example with alignment"
-                       >
-				</section>
+		  <!-- Extraire les variables des noms de colonnes -->
+		    <section>
+			  <h2>Séparation des variables nutriment et taux de croissance</h2>
+              <p>fonction <i>separate</i> de tidyr :</p>
+			  <pre>
+Observations: 199332
+Variables:
+$ name            (chr) "SFB2", "", "QRI7", "CFT2", "SSO2", "PSP2", ...
+$ BP              (chr) "ER to Golgi transport", "biological process...
+$ MF              (chr) "molecular function unknown", "molecular fun...
+$ systematic_name (chr) "YNL049C", "YNL095C", "YDL104C", "YLR115W", ...
+$ nutrient        (fctr) G, G, G, G, G, G, G, G, G, G, G, G, G, G, G...
+$ rate            (dbl) 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0....
+$ expression      (dbl) -0.24, 0.28, -0.02, -0.33, 0.05, -0.69, -0.5...
+			  </pre>
+		    </section>
 
-				<section>
-					<h2>Slides</h2>
-					<p>
-						Not a coder? Not a problem. There's a fully-featured visual editor for authoring these, try it out at <a href="http://slides.com" target="_blank">http://slides.com</a>.
-					</p>
-				</section>
+		  <!-- Selection d'un gène d'intérêt -->
+		    <section>
+			  <h2>Focus sur le gène LEU1</h2>
+              <p>fonction <i>filter</i> de dplyr :</p>
+			  <pre>
+                <code class="R" data-trim>
+cleaned_data %>%
+  filter(name == "LEU1") %>%
+  View()
+			    </code>
+			  </pre>
+              <p>LEU1 est un gène participant à la synthèse de la
+              leucine. On a 36 observations (6 conditions et 6 taux de
+              croissance).</p>
+		    </section>
 
-				<section>
-					<h2>Point of View</h2>
-					<p>
-						Press <strong>ESC</strong> to enter the slide overview.
-					</p>
-					<p>
-						Hold down alt and click on any element to zoom in on it using <a href="http://lab.hakim.se/zoom-js">zoom.js</a>. Alt + click anywhere to zoom back out.
-					</p>
-				</section>
+		  <!-- Selection d'un gène d'intérêt -->
+		  <section>
+		    <section>
+			  <h2>Visualisation avec ggplot2</h2>
+              <p>fonction <i>filter</i> de dplyr :</p>
+			  <pre>
+                <code class="R" data-trim>
+library(ggplot2)
 
-				<section>
-					<h2>Touch Optimized</h2>
-					<p>
-						Presentations look great on touch devices, like mobile phones and tablets. Simply swipe through your slides.
-					</p>
-				</section>
+cleaned_data %>%
+  filter(name == "LEU1") %>%
+  ggplot(aes(rate, expression, color = nutrient)) +
+  geom_line()
+			    </code>
+			  </pre>
+              <p>LEU1 est un gène participant à la synthèse de la
+              leucine. On a 36 observations (6 conditions et 6 taux de
+              croissance).</p>
+		    </section>
+		    <section>
+			  <h2>ggplot2 ? gnéé ??</h2>
+              <p>grammaire graphique :</br>données + géométrie + système de coordonnées = graphique</p>
+			  <pre>
+                <code class="R" data-trim>
+  ggplot(data = cleaned_data,
+         aes(x = rate, y = expression, color = nutrient)) +
+  geom_line()
+			    </code>
+			  </pre>
+              <p>système de coordonnées cartésien par défaut (polaire,
+              logarithmique, cartographique, ...)</p>
+		    </section>
+		  </section>
 
-				<section data-markdown>
-					<script type="text/template">
-						## Markdown support
+		  <!-- Selection d'un gène d'intérêt -->
+		    <section>
+			  <h2>Visualisation avec ggplot2</h2>
+              <img
+                 data-src="http://varianceexplained.org/figs/2015-11-19-tidy-genomics/unnamed-chunk-14-1.png"
+                 >
+		    </section>
 
-						Write content using inline or external Markdown.
-						Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
+		  <!-- Selection de plusieurs gènes d'intérêt -->
+		    <section>
+			  <h2>Focus sur les gènes LEU</h2>
+			  <pre>
+                <code class="R" data-trim>
+cleaned_data %>%
+  filter(BP == "leucine biosynthesis") %>%
+  ggplot(aes(rate, expression, color = nutrient)) +
+  geom_line() +
+  facet_wrap(~name)
+			    </code>
+			  </pre>
+		    </section>
 
-						```
-						<section data-markdown>
-						  ## Markdown support
+		  <!-- Selection d'un gène d'intérêt -->
+		    <section>
+			  <h2>Visualisation avec ggplot2</h2>
+              <img
+                 data-src="http://varianceexplained.org/figs/2015-11-19-tidy-genomics/unnamed-chunk-15-1.png"
+                 >
+		    </section>
 
-						  Write content using inline or external Markdown.
-						  Instructions and more info available in the [readme](https://github.com/hakimel/reveal.js#markdown).
-						</section>
-						```
-					</script>
-				</section>
+		  <!-- Selection de plusieurs gènes d'intérêt -->
+		    <section>
+			  <h2>Focus sur les gènes LEU</h2>
+              <p>ajustement de droite (modèle linéaire, ou <i>lm</i>)</p>
+			  <pre>
+                <code class="R" data-trim>
+cleaned_data %>%
+  filter(BP == "leucine biosynthesis") %>%
+  ggplot(aes(rate, expression, color = nutrient)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  facet_wrap(~name)
+			    </code>
+			  </pre>
+		    </section>
 
+		  <!-- Selection d'un gène d'intérêt -->
+		    <section>
+			  <h2>Visualisation avec ggplot2</h2>
+              <img
+                 data-src="http://varianceexplained.org/figs/2015-11-19-tidy-genomics/unnamed-chunk-16-1.png"
+                 >
+		    </section>
 
-				<section>
-					<h2>Intergalactic Interconnections</h2>
-					<p>
-						You can link between slides internally,
-						<a href="file:///home/loire/projet/Formation/Rscript_and_data/PopphylData/Fit_piS.html">link to interactive plot</a>.
-					</p>
-				</section>
+		  <!-- Selection de métabolisme d'intérêt -->
+		    <section>
+			  <h2>Focus sur le métabolisme du soufre</h2>
+			  <pre>
+                <code class="R" data-trim>
+cleaned_data %>%
+  filter(BP == "sulfur metabolism") %>%
+  ggplot(aes(rate, expression, color = nutrient)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  facet_wrap(~name + systematic_name, scales = "free_y")
+			    </code>
+			  </pre>
+		    </section>
 
+		  <!-- Selection d'un gène d'intérêt -->
+		    <section>
+			  <h2>Visualisation avec ggplot2</h2>
+              <img
+                 data-src="http://varianceexplained.org/figs/2015-11-19-tidy-genomics/unnamed-chunk-17-1.png"
+                 >
+		    </section>
+
+		  <!-- Toutes les commandes -->
+		  <section>
+			<h2>Script complet</h2>
+			<pre>
+              <code class="R" data-trim>
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+
+Brauer2008_DataSet1 <- read.delim("/tmp/RtmpmIvzA5/data67167154fe1d")
+
+cleaned_data <- Brauer2008_DataSet1 %>%
+  separate(NAME, c("name", "BP", "MF", "systematic_name", "number"), sep = "\\|\\|") %>%
+  mutate_each(funs(trimws), name:systematic_name) %>%
+  select(-number, -GID, -YORF, -GWEIGHT) %>%
+  gather(sample, expression, G0.05:U0.3) %>%
+  separate(sample, c("nutrient", "rate"), sep = 1, convert = TRUE)
+
+cleaned_data %>%
+  filter(BP == "leucine biosynthesis") %>%
+  ggplot(aes(rate, expression, color = nutrient)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = FALSE) +
+  facet_wrap(~name)
+			  </code>
+            </pre>
+		  </section>
+
+		  <!-- Analyses supplémentaires sur le même jeu de données -->
+		  <section>
+			<h2>Modeling gene expression with broom</h2>
+			<h3>a case study in tidy analysis</h3>
+            <a href="http://varianceexplained.org/r/tidy-genomics-broom/">
+              <img width="200"
+                   data-src="http://varianceexplained.org/images/david_robinson_picture2.jpg"
+                   >
+            </a>
+            <p>par David Robinson</br><a href="http://varianceexplained.org/r/tidy-genomics-broom/">analyses supplémentaires sur le même jeu de données</a></p>
+		  </section>
+
+		  <!-- en chantier -->
+		  <section>
+			<h2>section en chantier</h2>
+		  </section>
+
+		  <!-- ggbio -->
+		  <section>
+			<h2>ggbio</h2>
+			<br>
+            <a href="http://www.tengfei.name/ggbio/">
+			  <img width="720"
+                   data-src="https://raw.githubusercontent.com/tengfei/ggbio/gh-pages/images/interval.png"
+                   alt="visualization of genomic data with ggbio"
+                   >
+            </a>
+		  </section>
+
+		  <!-- ggtree -->
+		  <section>
+			<h2>ggtree</h2>
+			<br>
+            <a href="http://bioconductor.org/packages/release/bioc/html/ggtree.html">
+			  <img width="720"
+                   data-src="https://raw.githubusercontent.com/GuangchuangYu/ygc_name/master/Bioconductor/ggtree/2016-ggtree-phylip_files/figure-markdown_strict/unnamed-chunk-2-1.png"
+                   alt="ggtree example with alignment"
+                   >
+            </a>
+		  </section>
+
+		  <!-- TARA results -->
+		  <section>
+			<h2>TARA Oceans</h2>
+			<p>relation entre fréquence, dispersion et diversité des taxons</p>
+			<img
+               data-src="images/cosmopolites_vs_specialists_47_station.png"
+               alt="TARA data, relation entre fréquence et dispersion des taxons"
+               >
+		  </section>
 
 					<!-- GG_theme -->
 				<section>
@@ -355,270 +792,52 @@ Variables not shown: value (dbl)
 
 				<section>
 					<h2>graphique interactif avec plotly</h2>
-					<iframe src="Fit_piS.html" width="800" height = 500" frameborder = 0>
+					<iframe src="Fit_piS.html" width="800" height = "500" frameborder = 0>
 					</iframe>
 				</section>
 
 
 
-
-
-
 				<section>
-					<section id="fragments">
-						<h2>Fragments</h2>
-						<p>Hit the next arrow...</p>
-						<p class="fragment">... to step through ...</p>
-						<p><span class="fragment">... a</span> <span class="fragment">fragmented</span> <span class="fragment">slide.</span></p>
-
-						<aside class="notes">
-							This slide has fragments which are also stepped through in the notes window.
-						</aside>
-					</section>
-					<section>
-						<h2>Fragment Styles</h2>
-						<p>There's different types of fragments, like:</p>
-						<p class="fragment grow">grow</p>
-						<p class="fragment shrink">shrink</p>
-						<p class="fragment fade-out">fade-out</p>
-						<p class="fragment current-visible">current-visible</p>
-						<p class="fragment highlight-red">highlight-red</p>
-						<p class="fragment highlight-blue">highlight-blue</p>
-					</section>
+				  <h2>Tabular Tables</h2>
+				  <table>
+					<thead>
+					  <tr>
+						<th>Item</th>
+						<th>Value</th>
+						<th>Quantity</th>
+					  </tr>
+					</thead>
+					<tbody>
+					  <tr>
+						<td>Apples</td>
+						<td>$1</td>
+						<td>7</td>
+					  </tr>
+					  <tr>
+						<td>Lemonade</td>
+						<td>$2</td>
+						<td>18</td>
+					  </tr>
+					  <tr>
+						<td>Bread</td>
+						<td>$3</td>
+						<td>2</td>
+					  </tr>
+					</tbody>
+				  </table>
 				</section>
 
-				<section id="transitions">
-					<h2>Transition Styles</h2>
-					<p>
-						You can select from different transitions, like: <br>
-						<a href="?transition=none#/transitions">None</a> -
-						<a href="?transition=fade#/transitions">Fade</a> -
-						<a href="?transition=slide#/transitions">Slide</a> -
-						<a href="?transition=convex#/transitions">Convex</a> -
-						<a href="?transition=concave#/transitions">Concave</a> -
-						<a href="?transition=zoom#/transitions">Zoom</a>
-					</p>
-				</section>
-
-				<section id="themes">
-					<h2>Themes</h2>
-					<p>
-						reveal.js comes with a few themes built in: <br>
-						<!-- Hacks to swap themes after the page has loaded. Not flexible and only intended for the reveal.js demo deck. -->
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black (default)</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/white.css'); return false;">White</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/league.css'); return false;">League</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/sky.css'); return false;">Sky</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/beige.css'); return false;">Beige</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/simple.css'); return false;">Simple</a> <br>
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/serif.css'); return false;">Serif</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/blood.css'); return false;">Blood</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/night.css'); return false;">Night</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/moon.css'); return false;">Moon</a> -
-						<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/solarized.css'); return false;">Solarized</a>
-					</p>
-				</section>
-
-				<section>
-					<section data-background="#dddddd">
-						<h2>Slide Backgrounds</h2>
-						<p>
-							Set <code>data-background="#dddddd"</code> on a slide to change the background color. All CSS color formats are supported.
-						</p>
-						<a href="#" class="navigate-down">
-							<img width="178" height="238" data-src="https://s3.amazonaws.com/hakim-static/reveal-js/arrow.png" alt="Down arrow">
-						</a>
-					</section>
-					<section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/image-placeholder.png">
-						<h2>Image Backgrounds</h2>
-						<pre><code class="hljs">&lt;section data-background="image.png"&gt;</code></pre>
-					</section>
-					<section data-background="https://s3.amazonaws.com/hakim-static/reveal-js/image-placeholder.png" data-background-repeat="repeat" data-background-size="100px">
-						<h2>Tiled Backgrounds</h2>
-						<pre><code class="hljs" style="word-wrap: break-word;">&lt;section data-background="image.png" data-background-repeat="repeat" data-background-size="100px"&gt;</code></pre>
-					</section>
-					<section data-background-video="https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.mp4,https://s3.amazonaws.com/static.slid.es/site/homepage/v1/homepage-video-editor.webm" data-background-color="#000000">
-						<div style="background-color: rgba(0, 0, 0, 0.9); color: #fff; padding: 20px;">
-							<h2>Video Backgrounds</h2>
-							<pre><code class="hljs" style="word-wrap: break-word;">&lt;section data-background-video="video.mp4,video.webm"&gt;</code></pre>
-						</div>
-					</section>
-					<section data-background="http://i.giphy.com/90F8aUepslB84.gif">
-						<h2>... and GIFs!</h2>
-					</section>
-				</section>
-
-				<section data-transition="slide" data-background="#4d7e65" data-background-transition="zoom">
-					<h2>Background Transitions</h2>
-					<p>
-						Different background transitions are available via the backgroundTransition option. This one's called "zoom".
-					</p>
-					<pre><code class="hljs">Reveal.configure({ backgroundTransition: 'zoom' })</code></pre>
-				</section>
-
-				<section data-transition="slide" data-background="#b5533c" data-background-transition="zoom">
-					<h2>Background Transitions</h2>
-					<p>
-						You can override background transitions per-slide.
-					</p>
-					<pre><code class="hljs" style="word-wrap: break-word;">&lt;section data-background-transition="zoom"&gt;</code></pre>
-				</section>
-
-				<section>
-					<h2>Pretty Code</h2>
-					<pre><code class="hljs" data-trim contenteditable>
-function linkify( selector ) {
-  if( supports3DTransforms ) {
-
-    var nodes = document.querySelectorAll( selector );
-
-    for( var i = 0, len = nodes.length; i &lt; len; i++ ) {
-      var node = nodes[i];
-
-      if( !node.className ) {
-        node.className += ' roll';
-      }
-    }
-  }
-}
-					</code></pre>
-					<p>Code syntax highlighting courtesy of <a href="http://softwaremaniacs.org/soft/highlight/en/description/">highlight.js</a>.</p>
-				</section>
-
-				<section>
-					<h2>Marvelous List</h2>
-					<ul>
-						<li>No order here</li>
-						<li>Or here</li>
-						<li>Or here</li>
-						<li>Or here</li>
-					</ul>
-				</section>
-
-				<section>
-					<h2>Fantastic Ordered List</h2>
-					<ol>
-						<li>One is smaller than...</li>
-						<li>Two is smaller than...</li>
-						<li>Three!</li>
-					</ol>
-				</section>
-
-				<section>
-					<h2>Tabular Tables</h2>
-					<table>
-						<thead>
-							<tr>
-								<th>Item</th>
-								<th>Value</th>
-								<th>Quantity</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>Apples</td>
-								<td>$1</td>
-								<td>7</td>
-							</tr>
-							<tr>
-								<td>Lemonade</td>
-								<td>$2</td>
-								<td>18</td>
-							</tr>
-							<tr>
-								<td>Bread</td>
-								<td>$3</td>
-								<td>2</td>
-							</tr>
-						</tbody>
-					</table>
-				</section>
-
-				<section>
-					<h2>Clever Quotes</h2>
-					<p>
-						These guys come in two forms, inline: <q cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-						&ldquo;The nice thing about standards is that there are so many to choose from&rdquo;</q> and block:
-					</p>
-					<blockquote cite="http://searchservervirtualization.techtarget.com/definition/Our-Favorite-Technology-Quotations">
-						&ldquo;For years there has been a theory that millions of monkeys typing at random on millions of typewriters would
-						reproduce the entire works of Shakespeare. The Internet has proven this theory to be untrue.&rdquo;
-					</blockquote>
-				</section>
-
-				<section>
-					<h2>Intergalactic Interconnections</h2>
-					<p>
-						You can link between slides internally,
-						<a href="#/2/3">like this</a>.
-					</p>
-				</section>
-
-				<section>
-					<h2>Speaker View</h2>
-					<p>There's a <a href="https://github.com/hakimel/reveal.js#speaker-notes">speaker view</a>. It includes a timer, preview of the upcoming slide as well as your speaker notes.</p>
-					<p>Press the <em>S</em> key to try it out.</p>
-
-					<aside class="notes">
-						Oh hey, these are some notes. They'll be hidden in your presentation, but you can see them if you open the speaker notes window (hit 's' on your keyboard).
-					</aside>
-				</section>
-
-				<section>
-					<h2>Export to PDF</h2>
-					<p>Presentations can be <a href="https://github.com/hakimel/reveal.js#pdf-export">exported to PDF</a>, here's an example:</p>
-					<iframe src="https://www.slideshare.net/slideshow/embed_code/42840540" width="445" height="355" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:3px solid #666; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe>
-				</section>
-
-				<section>
-					<h2>Global State</h2>
-					<p>
-						Set <code>data-state="something"</code> on a slide and <code>"something"</code>
-						will be added as a class to the document element when the slide is open. This lets you
-						apply broader style changes, like switching the page background.
-					</p>
-				</section>
-
-				<section data-state="customevent">
-					<h2>State Events</h2>
-					<p>
-						Additionally custom events can be triggered on a per slide basis by binding to the <code>data-state</code> name.
-					</p>
-					<pre><code class="javascript" data-trim contenteditable style="font-size: 18px;">
-Reveal.addEventListener( 'customevent', function() {
-	console.log( '"customevent" has fired' );
-} );
-					</code></pre>
-				</section>
-
-				<section>
-					<h2>Take a Moment</h2>
-					<p>
-						Press B or . on your keyboard to pause the presentation. This is helpful when you're on stage and want to take distracting slides off the screen.
-					</p>
-				</section>
-
-				<section>
-					<h2>Much more</h2>
-					<ul>
-						<li>Right-to-left support</li>
-						<li><a href="https://github.com/hakimel/reveal.js#api">Extensive JavaScript API</a></li>
-						<li><a href="https://github.com/hakimel/reveal.js#auto-sliding">Auto-progression</a></li>
-						<li><a href="https://github.com/hakimel/reveal.js#parallax-background">Parallax backgrounds</a></li>
-						<li><a href="https://github.com/hakimel/reveal.js#keyboard-bindings">Custom keyboard bindings</a></li>
-					</ul>
-				</section>
-
+                <!-- Conclusion -->
 				<section style="text-align: left;">
-					<h1>THE END</h1>
-					<p>
-						- <a href="http://slides.com">Try the online editor</a> <br>
-						- <a href="https://github.com/hakimel/reveal.js">Source code &amp; documentation</a>
-					</p>
+				  <h1>THE END</h1>
+				  <p>
+					- <a href="http://slides.com">Try the online editor</a> <br>
+					- <a href="https://github.com/hakimel/reveal.js">Source code &amp; documentation</a>
+				  </p>
 				</section>
 
 			</div>
-
 		</div>
 
 		<script src="lib/js/head.min.js"></script>
