@@ -28,7 +28,13 @@
 			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
 			document.getElementsByTagName( 'head' )[0].appendChild( link );
 		</script>
+		
+		
+		<script src="lib/htmlwidgets-0.5/htmlwidgets.js"></script>
+		<script src="lib/plotlyjs-1.1.1/plotly-latest.min.js"></script>
+		<script src="lib/plotly-binding-2.0.6/plotly.js"></script>
 
+		
 		<!--[if lt IE 9]>
 		<script src="lib/js/html5shiv.js"></script>
 		<![endif]-->
@@ -54,6 +60,10 @@
 						reveal.js enables you to create beautiful interactive slide decks using HTML. This presentation will show you examples of what it can do.
 					</p>
 				</section>
+
+
+
+
 
 				<!-- Example of nested vertical slides -->
 				<section>
@@ -105,6 +115,254 @@
 						```
 					</script>
 				</section>
+
+
+				<section>
+					<h2>Intergalactic Interconnections</h2>
+					<p>
+						You can link between slides internally,
+						<a href="file:///home/loire/projet/Formation/Rscript_and_data/PopphylData/Fit_piS.html">link to interactive plot</a>.
+					</p>
+				</section>
+
+
+					<!-- GG_theme -->
+				<section>
+					<h2>Cosmétique: gg_theme()<h2>
+
+				</section>
+
+				<section>
+					<h2>Exporter sa figure<h2>
+
+
+				</section>
+
+
+				<!-- Spatial and temporal datasets -->
+				<section>
+					<h3>Gerer des données temporelles/spatiales </h3>
+					<p>
+						Données d'abondances de cullicoides sur des piègages en France métropolitaine sur plusieurs années.
+					</p>
+							<img width = "50%" data-src="images/c_imicola_femelle_reference.jpg" alt="imicola" >
+
+				</section>
+				<section>
+					<p>
+					Format csv -> "comma separated value" 
+					</p>
+					<p>
+						Les champs sont séparés par le charactère <strong>"|"</strong>
+					</p>
+							<img width = "100%" data-src="images/rawdataOcapi.png" alt="dataset" >
+
+				</section>
+				<section>
+					<pre><code class="R" data-trim contenteditable>
+data = read.table("uniqDataOcapi.csv",sep="|",header=T, na.strings = "NA",\
+ fill=TRUE, strip.white=TRUE, blank.lines.skip = TRUE)
+str(data)
+
+
+					</code></pre>
+					<pre><code class="R" data-trim contenteditable>
+'data.frame':   54647 obs. of  12 variables:
+$ ID_SITE     : Factor w/ 298 levels "01PL1","01PL2",..: 1 1 1 1 1 1 1 1 1 1 ...
+$ LONG_IDENTIF: num  5.79 5.79 5.79 5.79 5.79 5.79 5.79 5.79 5.79 5.79 ...
+$ LAT_IDENTIF : num  46.1 46.1 46.1 46.1 46.1 ...
+$ DATEDEBUT   : Factor w/ 1133 levels "10/10/2008","10/10/2011",..: 12 26 51 69 69 69 69 158 170 203 ...
+$ ESPECE      : Factor w/ 89 levels "abchazicus","achrayi",..: 15 15 53 44 53 54 65 15 53 15 ...
+$ NBMALES     : int  0 0 0 0 0 1 0 0 0 0 ...
+$ NBFEMELLES  : int  0 0 4 11 226 0 14 0 2 0 ...
+$ NBPARE      : int  0 0 4 6 192 0 14 0 1 0 ...
+$ NBNULLIPARE : int  0 0 0 5 34 0 0 0 1 0 ...
+$ NBGORGEES   : int  0 0 0 0 0 0 0 0 0 0 ...
+$ NBINDIV     : int  0 0 4 11 226 1 14 0 2 0 ...
+$ NBINDETER   : int  0 0 0 0 0 0 0 0 0 0 ...
+					</code></pre>
+				
+				</section>
+
+
+				<!-- Data cleaning part  -->
+			<section>
+				 
+				<section>
+					<pre><code class="R" data-trim contenteditable>
+ data %>% tbl_df  %>% View
+					</code></pre>
+				<img width = "100%" data-src="images/Ocapi.png" alt="dataset" >
+				
+				</section>
+				
+				<section>
+					<pre><code class="R" data-trim contenteditable>
+data %>% tbl_df %>% filter(., NBINDIV>0) %>% na.omit %>% View
+					</code></pre>
+				<img width = "100%" data-src="images/Ocapi1.png" alt="dataset" >
+				
+				
+				</section>
+				
+				<section>
+					<pre><code class="R" data-trim contenteditable>
+data %>% tbl_df %>% filter(., NBINDIV>0) %>% na.omit %>% \
+mutate(.,lat = as.numeric(LAT_IDENTIF)) %>% \
+mutate(.,long = as.numeric(LONG_IDENTIF)) %>%  \
+mutate(.,date = as.Date(DATEDEBUT,"%m/%d/%Y")) \ 
+mutate(.,SexRatio = NBFEMELLES/(NBMALES+NBFEMELLES)) %>% View 
+					</code></pre>
+
+				<img width = "100%" data-src="images/Ocapi3.png" alt="dataset" >
+				</section>
+
+				
+				<section>
+					<pre><code class="R" data-trim contenteditable>
+data %>% tbl_df %>% filter(., NBINDIV>0) %>% na.omit %>% \
+mutate(.,lat = as.numeric(LAT_IDENTIF)) %>% \
+mutate(.,long = as.numeric(LONG_IDENTIF)) %>%  \
+mutate(.,date = as.Date(DATEDEBUT,"%m/%d/%Y")) \   
+mutate(.,SexRatio = NBFEMELLES/(NBMALES+NBFEMELLES)) \ 
+separate(.,date,c("year","month","day")) %>% View
+					</code></pre>
+
+				<img width = "100%" data-src="images/Ocapi4.png" alt="dataset" >
+				</section>
+
+				
+				<section>
+					<pre><code class="R" data-trim contenteditable>
+data %>% tbl_df %>% filter(., NBINDIV>0) %>% na.omit %>% \
+mutate(.,lat = as.numeric(LAT_IDENTIF)) %>% \
+mutate(.,long = as.numeric(LONG_IDENTIF)) %>%  \
+mutate(.,date = as.Date(DATEDEBUT,"%m/%d/%Y")) 
+mutate(.,SexRatio = NBFEMELLES/(NBMALES+NBFEMELLES)) \ 
+separate(.,date,c("year","month","day")) \
+select(.,ID_SITE,long,lat,year,month,day,ESPECE,SexRatio,NBINDIV,NBMALES,NBFEMELLES,) %>% View
+					</code></pre>
+
+				<img width = "100%" data-src="images/Ocapi5.png" alt="dataset" >
+				</section>
+				
+				<section>
+					<pre><code class="R" data-trim contenteditable>
+data %>% tbl_df %>% filter(., NBINDIV>0) %>% na.omit %>% \
+mutate(.,lat = as.numeric(LAT_IDENTIF)) %>% \
+mutate(.,long = as.numeric(LONG_IDENTIF)) %>%  \
+mutate(.,date = as.Date(DATEDEBUT,"%m/%d/%Y")) 
+mutate(.,SexRatio = NBFEMELLES/(NBMALES+NBFEMELLES)) \ 
+separate(.,date,c("year","month","day")) \
+select(.,ID_SITE,long,lat,year,month,day,ESPECE,SexRatio,NBINDIV,NBMALES,NBFEMELLES,) \
+gather(.,"variable","value",NBINDIV,SexRatio,NBMALES,NBFEMELLES) %>% View  
+					</code></pre>
+
+				<img width = "100%" data-src="images/Ocapi6.png" alt="dataset" >
+				</section>
+			</section>
+
+				
+				<section>
+					<pre><code class="R" data-trim contenteditable>
+td = data %>% tbl_df %>% filter(., NBINDIV>0) %>% na.omit %>% \
+mutate(.,lat = as.numeric(LAT_IDENTIF)) %>% \
+mutate(.,long = as.numeric(LONG_IDENTIF)) %>%  \
+mutate(.,date = as.Date(DATEDEBUT,"%m/%d/%Y")) 
+mutate(.,SexRatio = NBFEMELLES/(NBMALES+NBFEMELLES)) \ 
+separate(.,date,c("year","month","day")) \
+select(.,ID_SITE,long,lat,year,month,day,ESPECE,SexRatio,NBINDIV,NBMALES,NBFEMELLES,) \
+gather(.,"variable","value",NBINDIV,SexRatio,NBMALES,NBFEMELLES) 
+					</code></pre>
+
+					<pre><code class="R" data-trim contenteditable>
+> td
+Source: local data frame [193,332 x 9]
+
+   ID_SITE  long   lat  year month   day             ESPECE variable value
+    (fctr) (dbl) (dbl) (chr) (chr) (chr)             (fctr)   (fctr) (dbl)
+1    01PL1  5.79 46.06  2009    10    26 obsoletus/scoticus  NBINDIV     4
+2    01PL1  5.79 46.06  2009    10    05          lupicaris  NBINDIV    11
+3    01PL1  5.79 46.06  2009    10    05 obsoletus/scoticus  NBINDIV   226
+4    01PL1  5.79 46.06  2009    10    05     obsoletus s.st  NBINDIV     1
+5    01PL1  5.79 46.06  2009    10    05          pulicaris  NBINDIV    14
+6    01PL1  5.79 46.06  2009    11    23 obsoletus/scoticus  NBINDIV     2
+7    01PL1  5.79 46.06  2009    04    14         chiopterus  NBINDIV    14
+8    01PL1  5.79 46.06  2009    04    14          newsteadi  NBINDIV     1
+9    01PL1  5.79 46.06  2009    04    14 obsoletus/scoticus  NBINDIV    58
+10   01PL1  5.79 46.06  2009    04    14     obsoletus s.st  NBINDIV     1
+..     ...   ...   ...   ...   ...   ...                ...      ...   ...
+
+
+					</code></pre>
+				</section>
+
+			
+				<section>
+					<pre><code class="R" data-noescape data-trim contenteditable>
+
+td = data %>% tbl_df %>% filter(., NBINDIV>0) %>% na.omit %>% \
+mutate(.,lat = as.numeric(LAT_IDENTIF)) %>% \
+mutate(.,long = as.numeric(LONG_IDENTIF)) %>%  \
+mutate(.,date = as.Date(DATEDEBUT,"%m/%d/%Y")) 
+mutate(.,SexRatio = NBFEMELLES/(NBMALES+NBFEMELLES)) \ 
+<mark>mutate(.,datesp = date)</mark>
+separate(.,<mark>datesp</mark>,c("year","month","day")) \
+select(.,ID_SITE,long,lat,year,month,day,ESPECE,SexRatio,NBINDIV,NBMALES,NBFEMELLES,) \
+gather(.,"variable","value",NBINDIV,SexRatio,NBMALES,NBFEMELLES) 
+					</code></pre>
+
+					<pre><code class="R" data-trim contenteditable>
+
+> td
+Source: local data frame [193,332 x 10]
+
+   ID_SITE  long   lat       date  year month   day             ESPECE variable
+    (fctr) (dbl) (dbl)     (date) (chr) (chr) (chr)             (fctr)   (fctr)
+1    01PL1  5.79 46.06 2009-10-26  2009    10    26 obsoletus/scoticus  NBINDIV
+2    01PL1  5.79 46.06 2009-10-05  2009    10    05          lupicaris  NBINDIV
+3    01PL1  5.79 46.06 2009-10-05  2009    10    05 obsoletus/scoticus  NBINDIV
+4    01PL1  5.79 46.06 2009-10-05  2009    10    05     obsoletus s.st  NBINDIV
+5    01PL1  5.79 46.06 2009-10-05  2009    10    05          pulicaris  NBINDIV
+6    01PL1  5.79 46.06 2009-11-23  2009    11    23 obsoletus/scoticus  NBINDIV
+7    01PL1  5.79 46.06 2009-04-14  2009    04    14         chiopterus  NBINDIV
+8    01PL1  5.79 46.06 2009-04-14  2009    04    14          newsteadi  NBINDIV
+9    01PL1  5.79 46.06 2009-04-14  2009    04    14 obsoletus/scoticus  NBINDIV
+10   01PL1  5.79 46.06 2009-04-14  2009    04    14     obsoletus s.st  NBINDIV
+..     ...   ...   ...        ...   ...   ...   ...                ...      ...
+Variables not shown: value (dbl)
+
+
+					</code></pre>
+				</section>
+
+				<section>
+
+
+
+
+				</section>
+
+
+
+
+
+
+
+
+				<!-- Spatial and temporal datasets -->
+
+
+				<section>
+					<h2>graphique interactif avec plotly</h2>
+					<iframe src="Fit_piS.html" width="800" height = 500" frameborder = 0>
+					</iframe>
+				</section>
+
+
+
+
+
 
 				<section>
 					<section id="fragments">
