@@ -207,7 +207,7 @@ dim(Brauer2008_DataSet1)
                 <code class="R" data-trim>
 library(dplyr)
 library(tidyr)
-cleaned_data <- original_data %>%
+cleaned_data <- Brauer2008_DataSet1 %>%
     separate(NAME, c("name", "BP", "MF", "systematic_name", "number"), sep = "\\|\\|")
 View(cleaned_data)
 			    </code>
@@ -553,10 +553,22 @@ cleaned_data %>%
             </a>
 		  </section>
 
+		  <!-- ggtree -->
+		  <section>
+			<h2>ggmap</h2>
+			<br>
+            <a href="http://chrisbeeley.net/?m=201207">
+			  <img
+                 data-src="http://chrisbeeley.net/wp-content/uploads/2012/07/map2.png"
+                 alt="ggmap example"
+                 >
+            </a>
+		  </section>
+
 		  <!-- TARA results -->
 		  <section>
 			<h2>TARA Oceans</h2>
-			<p>relation entre fréquence, dispersion et diversité des taxons</p>
+			<!-- <p>relation entre fréquence, dispersion et diversité des taxons</p> -->
 			<img
                data-src="images/cosmopolites_vs_specialists_47_station.png"
                alt="TARA data, relation entre fréquence et dispersion des taxons"
@@ -1175,7 +1187,7 @@ layout(yaxis = list(title = "Pi_s", type = "log"))  </code></pre>
 					<section id="Conclusions">
 						<h2>Conclusions</h2>
 						<p>Tout est possible</p>
-						<p class="fragment">Rien de va marcher</p>
+						<p class="fragment">Rien ne va marcher</p>
 						<p class="fragment">Mais quelqu'un a déjà essayé</p>
 
 					</section>
