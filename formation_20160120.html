@@ -48,7 +48,7 @@
           <!-- Titre -->
 		  <section>
 			<h1>Manipulation de données et visualisation sous R</h1>
-			<h3>ggplot2, dyplr & tidyr</h3>
+			<h3>ggplot2, dplyr & tidyr</h3>
 			<p>
 			  <small>collectif de bioinformatique de Baillarguet</small>
 			</p>
@@ -138,7 +138,7 @@
 		  <section>
 			<h2>Coordination of Growth Rate, Cell Cycle, Stress Response, and Metabolic Activity in Yeast</h2>
 			<h3>Brauer et al. (2008) Mol. Biol. Cell January 1, 2008 vol. 19 no. 1 352-367 (doi: 10.1091/mbc.E07-08-0779)</h3>
-            <p>http://varianceexplained.org/files/Brauer2008_DataSet1.tds</p>
+            <p><a href="http://varianceexplained.org/files/Brauer2008_DataSet1.tds">http://varianceexplained.org/files/Brauer2008_DataSet1.tds</a></p>
 		  </section>
 
 		  <!-- Premières commandes avec RStudio -->
@@ -174,9 +174,9 @@ dim(Brauer2008_DataSet1)
 			<h2>Disposition des données : pourquoi changer ?</h2>
             <p>Les outils d'Hadley Wickham réclament :</p>
             <ul>
-			  <li>chaque variable forme une colonne,</li>
-			  <li>chaque observation forme une ligne,</li>
-			  <li>un type d'observation par tableau.</li>
+			  <li>une seule variable par colonne,</li>
+			  <li>une seule observation par ligne,</li>
+			  <li>un seul type d'observation par tableau.</li>
 			</ul>
             <p>Ce qui ne va pas dans la disposition actuelle :</p>
             <ul>
@@ -187,7 +187,7 @@ dim(Brauer2008_DataSet1)
 
 		  <!-- Traitement de la colonne NAME ? -->
 		  <section>
-			<h2>Séparer la colonne NAME en plusieurs variables</h2>
+			<h2>Séparer une colonne en plusieurs variables</h2>
             <p>La colonne NAME contient :</p>
             <ul>
 			  <li>un nom de gène (ex : SFB2) ou rien,</li>
@@ -202,7 +202,8 @@ dim(Brauer2008_DataSet1)
 		  <!-- Utilisation de dplyr et tidyr -->
 		  <section>
 		    <section>
-			  <h2>Séparer la colonne NAME en plusieurs variables</h2>
+			  <h2>Séparer une colonne en plusieurs variables</h2>
+              <p>fonction <i>separate</i> de tidyr :</p>
 			  <pre>
                 <code class="R" data-trim>
 library(dplyr)
@@ -215,6 +216,7 @@ View(cleaned_data)
 		    </section>
 		    <section>
 			  <h2>Autre possibilité</h2>
+              <p>fonction <i>separate</i> de tidyr :</p>
 			  <pre>
                 <code class="R" data-trim>
 library(dplyr)
@@ -268,10 +270,9 @@ cleaned_data <- Brauer2008_DataSet1 %>%
     separate(NAME, c("name", "BP", "MF", "systematic_name", "number"), sep = "\\|\\|") %>%
     mutate_each(funs(trimws), name:systematic_name) %>%
     select(-number, -GID, -YORF, -GWEIGHT)
-glimpse(cleaned_data)
-			    </code>
-              </pre>
-              <pre>
+			  </code>
+            </pre>
+            <pre>
 Observations: 5537
 Variables:
 $ name            (chr) "SFB2", "", "QRI7", "CFT2", "SSO2", "PSP2", ...
@@ -299,7 +300,6 @@ cleaned_data <- Brauer2008_DataSet1 %>%
     mutate_each(funs(trimws), name:systematic_name) %>%
     select(-number, -GID, -YORF, -GWEIGHT) %>%
     gather(sample, expression, G0.05:U0.3)
-glimpse(cleaned_data)
 			    </code>
               </pre>
 		    </section>
@@ -335,7 +335,6 @@ cleaned_data <- Brauer2008_DataSet1 %>%
     select(-number, -GID, -YORF, -GWEIGHT) %>%
     gather(sample, expression, G0.05:U0.3) %>%
     separate(sample, c("nutrient", "rate"), sep = 1, convert = TRUE)
-glimpse(cleaned_data)
 			    </code>
 			  </pre>
 		    </section>
@@ -397,8 +396,8 @@ cleaned_data %>%
               <p>grammaire graphique :</br>données + géométrie + système de coordonnées = graphique</p>
 			  <pre>
                 <code class="R" data-trim>
-  ggplot(data = cleaned_data,
-         aes(x = rate, y = expression, color = nutrient)) +
+ggplot(data = cleaned_data,
+  aes(x = rate, y = expression, color = nutrient)) +
   geom_line()
 			    </code>
 			  </pre>
@@ -524,11 +523,6 @@ cleaned_data %>%
             <p>par David Robinson</br><a href="http://varianceexplained.org/r/tidy-genomics-broom/">analyses supplémentaires sur le même jeu de données</a></p>
 		  </section>
 
-		  <!-- en chantier -->
-		  <section>
-			<h2>section en chantier</h2>
-		  </section>
-
 		  <!-- ggbio -->
 		  <section>
 			<h2>ggbio</h2>
@@ -553,7 +547,7 @@ cleaned_data %>%
             </a>
 		  </section>
 
-		  <!-- ggtree -->
+		  <!-- ggmap -->
 		  <section>
 			<h2>ggmap</h2>
 			<br>
@@ -565,15 +559,28 @@ cleaned_data %>%
             </a>
 		  </section>
 
-		  <!-- TARA results -->
+		  <!-- ggtern -->
 		  <section>
-			<h2>TARA Oceans</h2>
-			<!-- <p>relation entre fréquence, dispersion et diversité des taxons</p> -->
-			<img
-               data-src="images/cosmopolites_vs_specialists_47_station.png"
-               alt="TARA data, relation entre fréquence et dispersion des taxons"
-               >
+			<h2>ggtern</h2>
+			<br>
+            <a href="http://www.ggtern.com">
+			  <img
+                 width="600"
+                 data-src="http://www.ggtern.com/wp-content/uploads/2014/06/limit_region_off.png"
+                 alt="ggtern example"
+                 >
+            </a>
 		  </section>
+
+		  <!-- Documentation -->
+		  <section>
+			<h2>Documentation</h2>
+            <p>antisèches <a href="https://www.rstudio.com/resources/cheatsheets/">tidyr,
+            dplyr, ggplot2, RStudio</a>,
+            tutoriel <a href="http://r-statistics.co/ggplot2-Tutorial-With-R.html">ggplot2</a></p>
+		  </section>
+
+          <!-- section Etienne -->
 				<section>
 					<h3>Exemples avancés</h3>
 					<p>
